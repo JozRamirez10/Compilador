@@ -4,10 +4,10 @@ El analizador léxico recibe un archivo con lexemas básicos propuestos y devuel
 
 Instrucciones 
 * Compilación
-  '''
+  ```
   gcc -o name main.c
-  '''
+  ```
 * Ejecución
-  '''
+  ```
   ./name file
-  '''
+  ```
