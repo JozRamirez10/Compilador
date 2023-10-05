@@ -159,7 +159,6 @@ int analizador(char* contenido) {
     
     do{
         token = obtenerSiguienteToken(&ptr);
-        
         switch (token.tipo) {
             case TOKEN_IDENTIFICADOR:
                 printf("\tTOKEN_IDENTIFICADOR: %s\n", token.lexema);
@@ -232,6 +231,9 @@ int analizador(char* contenido) {
             case TOKEN_COMENTARIO:
                 printf("\tTOKEN_COMENTARIO: //\n");
                 break;
+            case TOKEN_SALTO:
+                printf("\n");
+                break;
             case TOKEN_ERROR:
                 printf("\tTOKEN_ERROR: %s\n", token.lexema);
                 break;
@@ -245,14 +247,16 @@ int analizador(char* contenido) {
         }
         ptr++;
     }while(*ptr != '\0');
+    
     printf("*************************** \n");
     
     printf("\nEntrada:******************** \n\n");
-    printf("%s\n", contenido);
+    printf("%s\n\n", contenido);
     printf("*************************** \n");
 
     printf("\nSalida:******************** \n\n");
-    printf("%s\n", salida);
+    printf("%s\n\n", salida);
     printf("*************************** \n\n");
+    
     return 0;
 }
