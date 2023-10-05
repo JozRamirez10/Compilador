@@ -18,9 +18,15 @@ int leer(char* argv[], char** contenido){
         (*contenido)[0] = '\0';
 
         char linea[256];  // Supongamos que ninguna línea tiene más de 255 caracteres
+        int num = 1;
+        char* numLinea;
         while (fgets(linea, sizeof(linea), f) != NULL) {
+            //asprintf(&numLinea, "%d", num);
+            //strcat(*contenido, numLinea);
+            // strcat(*contenido, " - ");
             strcat(*contenido, linea);
-            strcat(*contenido, "\n");
+            //strcat(*contenido, "\n");
+            num++;
         }
         fclose(f);
     }
