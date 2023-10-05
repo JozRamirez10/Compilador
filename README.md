@@ -1,4 +1,6 @@
-# Compilador
+# Analizador léxico
+
+Fusión del identificador de gramática y el identificador de tokens.
 
 Recibe un archivo con lexemas básicos propuestos y devuelve a la salida los tokens que le pertenecen a dichos lexemas.
 
