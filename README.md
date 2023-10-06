@@ -7,7 +7,7 @@ El analizador léxico consta de dos parte fundamentales dentro del código.
     alphanum => id | numero
     id => [a-zA-Z][a-zA-Z0-9]*
     numero => [0-9]+
-    expresion => alphanum + expresion | alphanum - expresion | expresion
+    expresion => alphanum + expresion | alphanum - expresion | (expresion)
     ```
   - analizador.c : Una vez que se ha válidado la grámatica, el analizador determina el tipo de token de cada lexema.
 
