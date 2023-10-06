@@ -1,3 +1,6 @@
+/*
+    Obtiene los tokens que le corresponden a los lexemas
+*/
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -33,7 +36,9 @@ struct Token {
     char lexema[100];
 };
 
-// Función para obtener el siguiente token desde la entrada
+/*
+    Itera sobre cada caracter para encontrar el tipo de token
+*/
 struct Token obtenerSiguienteToken(char** ptr) {
     struct Token token;
 
@@ -43,6 +48,7 @@ struct Token obtenerSiguienteToken(char** ptr) {
     }
 
     if (isalpha(**ptr)) { // Verifica si es una letra (mayúscula o minúscula)
+        
         // Reconocer identificadores o palabras clave
         int i = 0;
         do {
@@ -60,12 +66,14 @@ struct Token obtenerSiguienteToken(char** ptr) {
         } else {
             token.tipo = TOKEN_IDENTIFICADOR;
         }
-        (*ptr)--;   
-    }else if (isdigit(**ptr) || **ptr == '.') {
+        (*ptr)--; 
+
+    }else if (isdigit(**ptr) || **ptr == '.') { // Valida que sea digito o "."
+        
         // Reconocer números enteros y números de punto flotante
         int i = 0;
         int puntoDecimal = 0;
-        int error = 0;
+        int error = 0; // Error dentro de los digitos, Error: 1a
 
         do {
             if (**ptr == '.') {
@@ -78,6 +86,7 @@ struct Token obtenerSiguienteToken(char** ptr) {
                 token.lexema[i++] = **ptr;
                 error++;
             }
+
         } while (isdigit(**ptr) || (**ptr == '.' && puntoDecimal == 0));
         
         token.lexema[i] = '\0';
@@ -106,7 +115,7 @@ struct Token obtenerSiguienteToken(char** ptr) {
             case '*':
                 token.tipo = TOKEN_MULTIPLICACION;
                 break;
-            case '/':
+            case '/': // Verifica que se division o comentario
                 (*ptr)++;
                 if(**ptr == '/'){
                     token.tipo = TOKEN_COMENTARIO;
@@ -143,23 +152,26 @@ struct Token obtenerSiguienteToken(char** ptr) {
                 token.tipo = TOKEN_ERROR; // Carácter no reconocido
                 break;
         }
-        token.lexema[0] = **ptr;
+        token.lexema[0] = **ptr; // Guarda el lexema
         token.lexema[1] = '\0';
     }
     return token;
 }
 
+/*
+    Itera sobre el contenido para validar cada tipo de token
+*/
 int analizador(char* contenido) {
-    char *ptr = contenido;
-    struct Token token;
-    char salida[500];
-    strcpy(salida, "");
+    char *ptr = contenido; // El apuntador itera sobre el contenido
+    struct Token token; 
+    char salida[500]; // Guarda el tipo de tokens a la salida 
+    strcpy(salida, ""); // Inicializa el array
 
     printf("\nAnalizador léxico:******************** \n");
     
     do{
         token = obtenerSiguienteToken(&ptr);
-        switch (token.tipo) {
+        switch (token.tipo) { // Imprime el tipo de token
             case TOKEN_IDENTIFICADOR:
                 printf("\tTOKEN_IDENTIFICADOR: %s\n", token.lexema);
                 strcat(salida, "IDENTIFICADOR");
@@ -241,7 +253,7 @@ int analizador(char* contenido) {
         if(token.tipo == TOKEN_SALTO){
             strcat(salida, "\n");
         }else{
-            if(token.tipo != TOKEN_ERROR){
+            if(token.tipo != TOKEN_ERROR){ // Si es un error no lo imprime en la salida
                 strcat(salida, " ");
             }
         }
