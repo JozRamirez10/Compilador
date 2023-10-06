@@ -23,7 +23,7 @@ enum {
     TOKEN_LLAVE_ABRE,
     TOKEN_LLAVE_CIERRA,
     TOKEN_COMA,
-    TOKEN_PUNTO_Y_COMA,
+    TOKEN_FIN,
     TOKEN_COMENTARIO,
     TOKEN_ERROR,
     TOKEN_EOF, 
@@ -143,7 +143,7 @@ struct Token obtenerSiguienteToken(char** ptr) {
                 token.tipo = TOKEN_COMA;
                 break;
             case ';':
-                token.tipo = TOKEN_PUNTO_Y_COMA;
+                token.tipo = TOKEN_FIN;
                 break;
             case '\n':
                 token.tipo = TOKEN_SALTO;
@@ -236,9 +236,9 @@ int analizador(char* contenido) {
                 printf("\tTOKEN_COMA: %s\n", token.lexema);
                 strcat(salida, "COMA");
                 break;
-            case TOKEN_PUNTO_Y_COMA:
-                printf("\tTOKEN_PUNTO_Y_COMA: %s\n", token.lexema);
-                strcat(salida, "PUNTO_Y_COMA");
+            case TOKEN_FIN:
+                printf("\tTOKEN_FIN: %s\n", token.lexema);
+                strcat(salida, "FIN");
                 break;
             case TOKEN_COMENTARIO:
                 printf("\tTOKEN_COMENTARIO: //\n");
