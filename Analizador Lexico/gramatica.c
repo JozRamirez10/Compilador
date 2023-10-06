@@ -141,10 +141,8 @@ bool separarCadenas(char** cadena) {
     }
     free(copia);  // Liberar la memoria de la copia
     
-    if(gramaticaValida){
-        printf("Gramática válida\n");
+    if(gramaticaValida)
         return true;
-    }
 
     return false;
 }

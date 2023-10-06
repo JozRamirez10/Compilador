@@ -11,7 +11,6 @@ int main(int argc, char* argv[]){
     char* contenido;
     leer(argv, &contenido);
     if(revisarGramatica(contenido) == 0){
-        printf("Validación correcta");
         analizador(contenido);
         free(contenido);
     }
