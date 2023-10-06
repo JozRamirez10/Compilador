@@ -1,16 +1,33 @@
 # Analizador léxico
 
-Fusión del identificador de gramática y el identificador de tokens.
-
-Recibe un archivo con lexemas básicos propuestos y devuelve a la salida los tokens que le pertenecen a dichos lexemas.
-Recibe un archivo con lexemas básicos propuestos y devuelve a la salida los tokens que le pertenecen a dichos lexemas.
+El analizador léxico consta de dos parte fundamentales dentro del código.
+  - gramatica.c : Se encarga de verificar que la gramática se cumpla:
+    ```
+    asignación => alphanum | expresion
+    alphanum => id | numero
+    id => [a-zA-Z][a-zA-Z0-9]*
+    numero => [0-9]+
+    expresion => alphanum + expresion | alphanum - expresion | expresion
+    ```
+  - analizador.c : Una vez que se ha válidado la grámatica, el analizador determina el tipo de token de cada lexema.
 
 Instrucciones 
 * Compilación
   ```
-  gcc -o name main.c
+  gcc -o main main.c
   ```
 * Ejecución
+  Al ejecutar el programa, éste debe recibir como argumento la ruta de un archivo que contenga los lexemas.
   ```
-  ./name file
+  ./main test/test1
+  ```
+  
+Entrada:
+  ```
+  x = 2
+  ```
+
+Salida:
+  ```
+  IDENTIFICADOR ASIGNACION NUMERO FIN
   ```
