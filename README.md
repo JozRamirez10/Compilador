@@ -31,3 +31,6 @@ Salida:
   ```
   IDENTIFICADOR ASIGNACION NUMERO FIN
   ```
+
+Nota: Los archivos de código y pruebas están dentro de la carpeta "Analizador lexico"
+
