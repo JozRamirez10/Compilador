@@ -8,6 +8,7 @@
 #include "gramatica.c"
 #include "analizador.c"
 #include "parser.c"
+#include "ast.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,9 +31,14 @@ int main(int argc, char* argv[]){
     // Obtiene el total de tokens que hay en la cadena
     contadorTokens = analizador(contenido, &tokens); // Convierte los lexemas a tokens
 
-    if(parser(tokens, contadorTokens)) // Verifica que se cumpla la gramática con respecto a los tokens
+    for(int i = 0; i < contadorTokens; i++){
+        //printf("%d ", tokens[i].tipo);
+    }
+
+    if(parser(tokens, contadorTokens)){ // Verifica que se cumpla la gramática con respecto a los tokens
         printf("Valid\n"); // Se tienen que cumplir todas las producciones
-    else{ // Si no se cumple alguna regla de producción lanza un error
+        ast(tokens, contadorTokens);
+    }else{ // Si no se cumple alguna regla de producción lanza un error
         printf("Error\n");
     }
     
