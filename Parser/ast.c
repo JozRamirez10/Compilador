@@ -48,7 +48,7 @@ void imprimirNodo(Nodo* nodo, int nivel){
         for(int i = 0; i < nivel; i++){
             printf(" ");
         }
-        printf("Tipo: %d, Lexema: %s\n", nodo->tipo, nodo->lexema);
+        printf("%s\n", nodo->lexema);
 
         imprimirNodo(nodo->izquierdo, nivel + 1);
         imprimirNodo(nodo->derecho, nivel + 1);
@@ -67,7 +67,6 @@ Nodo* nodoC(struct Token* tokens){
     Nodo* nodo = NULL;
     if(tokens[contadorNodo].tipo == ID){
         nodo = crearNodo(ID_NODO, tokens[contadorNodo].lexema);
-        contadorNodo++;
     }   
     if(tokens[contadorNodo].tipo == INT){
         nodo = crearNodo(INT_NODO, tokens[contadorNodo].lexema);
