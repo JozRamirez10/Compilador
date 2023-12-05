@@ -1,13 +1,13 @@
 /*
     Obtiene los tokens que le corresponden a los lexemas
 */
-
-#include "errores.c"
-
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 
+struct Token obtenerSiguienteToken(char** ptr);
+void verificarTamañoSalida(int* capacidad, int* contadorTokens, struct Token** tokensSalida);
+int lexico(char* contenido, struct Token** tokensSalida, struct ArrayError* errores);
 
 /*
     Itera sobre cada caracter para encontrar el tipo de token
@@ -36,7 +36,7 @@ struct Token obtenerSiguienteToken(char** ptr) {
             token.tipo = ELSE;
         } else if (strcmp(token.lexema, "while") == 0) {
             token.tipo = WHILE;
-        } else {
+        }else{
             token.tipo = ID;
         }
         (*ptr)--; 
@@ -73,6 +73,20 @@ struct Token obtenerSiguienteToken(char** ptr) {
             }
         }
         (*ptr)--;
+    }else if(**ptr == '\''){
+        int i = 0;
+        do{
+            token.lexema[i++] = **ptr;
+            (*ptr)++;
+        }while(isalnum(**ptr));
+        if(**ptr == '\''){
+            token.lexema[i] = **ptr;
+            token.lexema[i + 1] = '\0';
+            token.tipo = CHAR;
+        }else{
+            token.tipo = ERROR;
+        }
+        //(*ptr)--;
     }else {
         // Reconocer operadores y otros símbolos
         switch (**ptr) {

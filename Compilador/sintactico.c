@@ -2,15 +2,14 @@
     Analiza que se cumpla la grámatica con los tokens que recibe
     del analizador léxico
 
-    S -> ID = A
+    S -> ID = A | ID = CHAR
     A -> B | C
     B -> C + B | C - B | ( B ) | C + C | C - C | C
     C -> ID | INT 
     ID -> [a-zA-Z][a-zA-Z0-9]*
     INT -> [0-9]+
+    CHAR -> '[a-zA-Z0-9]'
 */
-
-//#include "errores.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,9 +100,18 @@ bool B(struct Token* tokens){
         default: // En cualquier otro caso, válida C
             return true;
             break; 
+    }else{
+        if(validarParentesis(tokens)) // Valida los paréntesis
+            return true;
     }
-    if(validarParentesis(tokens)) // Valida los paréntesis
+    return false;
+}
+
+bool CHR(struct Token* tokens){
+    if(tokens[contador].tipo == CHAR){
+        contador++;
         return true;
+    }
     return false;
 }
 
@@ -111,9 +119,14 @@ bool B(struct Token* tokens){
     Comprueba que se cumpla la regla A
 */
 bool A(struct Token* tokens){
-    if(B(tokens)){
+    if(CHR(tokens)){
         if(tokens[contador].tipo == FIN)
             return true;
+    }else{
+        if(B(tokens)){
+            if(tokens[contador].tipo == FIN)
+            return true;
+        }
     }
     return false;
 }

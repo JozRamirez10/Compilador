@@ -1,0 +1,11 @@
+section .data
+  // Asignación de variables
+
+section .text
+  global main // Etiqueta main como función principal
+
+main:
+  // código
+
+  mov eax, 0 // Libera la variable eax
+  ret // Termina la ejecución del programa

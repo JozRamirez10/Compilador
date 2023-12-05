@@ -1,0 +1,23 @@
+section .data
+  a dd 0
+  b dd 0
+  c db 0
+  d dd 0
+  e dd 0
+section .text
+  global main
+main:
+  mov eax, 13
+  add eax, 20
+  sub eax, 2
+  add eax, 4
+  sub eax, 5
+  mov dword [b], 2
+  mov byte [c], 'a'
+  mov eax, dword[a]
+  mov dword [d], eax
+  mov eax, dword [c]
+  mov dword [e], eax
+
+  mov eax, 0
+  ret

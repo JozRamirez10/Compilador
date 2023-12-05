@@ -1,49 +1,35 @@
 /*
     Construye el árbol AST
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-typedef enum{
-    ASIGNACION_NODO,
-    SUMA_NODO,
-    RESTA_NODO,
-    ID_NODO,
-    INT_NODO,
-} TipoNodo;
-
-typedef struct Nodo{
-    TipoNodo tipo;
-    char lexema[20];
-    struct Nodo* izquierdo;
-    struct Nodo* derecho;
-}Nodo;
+#include <string.h>
 
 /*
     Declaración de funciones
 */
-Nodo* nodoS(struct Token* tokens);
-Nodo* nodoA(struct Token* tokens);
-Nodo* nodoB(struct Token* tokens);
-Nodo* nodoB_parentesis(struct Token* tokens);
-Nodo* nodovalidarParentesis(struct Token* tokens);
-Nodo* nodoC(struct Token* tokens);
+NodoAST* nodoS(struct Token* tokens);
+NodoAST* nodoA(struct Token* tokens);
+NodoAST* nodoB(struct Token* tokens);
+NodoAST* nodoB_parentesis(struct Token* tokens);
+NodoAST* nodovalidarParentesis(struct Token* tokens);
+NodoAST* nodoC(struct Token* tokens);
 
 int contadorNodo = 0; // Contador global que itera sobre el arreglo de tokens
 
-Nodo* crearNodo(TipoNodo tipo, const char* lexema){
-    Nodo* nodo = (Nodo*)malloc(sizeof(Nodo));
+NodoAST* crearNodo(TipoNodo tipo, const char* lexema, int linea){
+    NodoAST* nodo = (NodoAST*)malloc(sizeof(NodoAST));
     nodo->tipo = tipo;
     strncpy(nodo->lexema, lexema, sizeof(nodo->lexema)-1);
     nodo->lexema[sizeof(nodo->lexema)-1] = '\0';
+    nodo->linea = linea;
     nodo->izquierdo = NULL;
     nodo->derecho = NULL;
     return nodo;
 }
 
-void imprimirNodo(Nodo* nodo, int nivel){
+void imprimirNodo(NodoAST* nodo, int nivel){
     if(nodo != NULL){
         for(int i = 0; i < nivel; i++){
             printf(" ");
@@ -55,7 +41,7 @@ void imprimirNodo(Nodo* nodo, int nivel){
     }
 }
 
-void liberarNodo(Nodo* nodo){
+void liberarNodo(NodoAST* nodo){
     if(nodo!= NULL)
         free(nodo);
 }
@@ -63,13 +49,13 @@ void liberarNodo(Nodo* nodo){
 /*
     Comprueba que se cumpla la regla C
 */
-Nodo* nodoC(struct Token* tokens){
-    Nodo* nodo = NULL;
+NodoAST* nodoC(struct Token* tokens){
+    NodoAST* nodo = NULL;
     if(tokens[contadorNodo].tipo == ID){
-        nodo = crearNodo(ID_NODO, tokens[contadorNodo].lexema);
+        nodo = crearNodo(ID_NODO, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
     }   
     if(tokens[contadorNodo].tipo == INT){
-        nodo = crearNodo(INT_NODO, tokens[contadorNodo].lexema);
+        nodo = crearNodo(INT_NODO, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
     }
     return nodo;
 }
@@ -78,8 +64,8 @@ Nodo* nodoC(struct Token* tokens){
     Comprueba que dentro del paréntesis haya producciones
     válidas y que además se cierre
 */
-Nodo* nodovalidarParentesis(struct Token* tokens){
-    Nodo* nodo = NULL;
+NodoAST* nodovalidarParentesis(struct Token* tokens){
+    NodoAST* nodo = NULL;
     if(tokens[contadorNodo].tipo == PARENT_IZQ){
         contadorNodo++;
         nodo = nodoB_parentesis(tokens);
@@ -95,15 +81,15 @@ Nodo* nodovalidarParentesis(struct Token* tokens){
     Comprueba que se cumpla la regla B para producciones
     dentro de un paréntesis
 */
-Nodo* nodoB_parentesis(struct Token* tokens){
-    Nodo* izquierdo = nodoC(tokens);
+NodoAST* nodoB_parentesis(struct Token* tokens){
+    NodoAST* izquierdo = nodoC(tokens);
     if(izquierdo != NULL){
         contadorNodo++;
         if(tokens[contadorNodo].tipo == SUMA || tokens[contadorNodo].tipo == RESTA){
             TipoNodo tipo = (tokens[contadorNodo].tipo == SUMA) ? SUMA_NODO : RESTA_NODO;
-            Nodo* nodo = crearNodo(tipo, tokens[contadorNodo].lexema);
+            NodoAST* nodo = crearNodo(tipo, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
             contadorNodo++;
-            Nodo* derecho = nodoB_parentesis(tokens);
+            NodoAST* derecho = nodoB_parentesis(tokens);
             if(derecho != NULL){
                 nodo->izquierdo = izquierdo;
                 nodo->derecho = derecho;
@@ -121,15 +107,15 @@ Nodo* nodoB_parentesis(struct Token* tokens){
 /*
     Comprueba que se cumpla la regla B
 */
-Nodo* nodoB(struct Token* tokens){
-    Nodo* izquierdo = nodoC(tokens);
+NodoAST* nodoB(struct Token* tokens){
+    NodoAST* izquierdo = nodoC(tokens);
     if(izquierdo != NULL){ // Válida si es ID|INT
         contadorNodo++;
         if(tokens[contadorNodo].tipo == SUMA || tokens[contadorNodo].tipo == RESTA){
             TipoNodo tipo = (tokens[contadorNodo].tipo == SUMA ? SUMA_NODO : RESTA_NODO);
-            Nodo* nodo = crearNodo(tipo, tokens[contadorNodo].lexema);
+            NodoAST* nodo = crearNodo(tipo, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
             contadorNodo++;
-            Nodo* derecho = nodoB(tokens);
+            NodoAST* derecho = nodoB(tokens);
             if(derecho != NULL){
                 nodo->izquierdo = izquierdo;
                 nodo->derecho = derecho;
@@ -141,14 +127,14 @@ Nodo* nodoB(struct Token* tokens){
             return izquierdo;
         }
     }
-    Nodo* parentesis = nodovalidarParentesis(tokens);
+    NodoAST* parentesis = nodovalidarParentesis(tokens);
     if(parentesis != NULL){
         contadorNodo++;
         if(tokens[contadorNodo].tipo == SUMA || tokens[contadorNodo].tipo == RESTA){
             TipoNodo tipo = (tokens[contadorNodo].tipo == SUMA ? SUMA_NODO : RESTA_NODO);
-            Nodo* nodo = crearNodo(tipo, tokens[contadorNodo].lexema);
+            NodoAST* nodo = crearNodo(tipo, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
             contadorNodo++;
-            Nodo* derecho = nodoB(tokens);
+            NodoAST* derecho = nodoB(tokens);
             if(derecho != NULL){
                 nodo->izquierdo = izquierdo;
                 nodo->derecho = derecho;
@@ -164,13 +150,32 @@ Nodo* nodoB(struct Token* tokens){
 }
 
 /*
+    Comprueba que el nodo sea un CHAR
+*/
+NodoAST* nodoCHR(struct Token* tokens){
+    NodoAST* nodo = NULL;
+    if(tokens[contadorNodo].tipo == CHAR){
+        nodo = crearNodo(CHAR_NODO, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
+    }
+    return nodo;
+}
+
+/*
     Comprueba que se cumpla la regla A
 */
-Nodo* nodoA(struct Token* tokens){
-    Nodo* izquierda = nodoB(tokens);
+NodoAST* nodoA(struct Token* tokens){
+    NodoAST* izquierda = nodoB(tokens);
     if(izquierda != NULL){
         if(tokens[contadorNodo].tipo == FIN){
             return izquierda;
+        }
+    }else{
+        NodoAST* izquierda = nodoCHR(tokens);
+        if(izquierda != NULL){
+            contadorNodo++;
+            if(tokens[contadorNodo].tipo == FIN){
+                return izquierda;
+            }
         }
     }
     return NULL;
@@ -179,14 +184,14 @@ Nodo* nodoA(struct Token* tokens){
 /*
     Comprueba que se cumpla la regla S
 */
-Nodo* nodoS(struct Token* tokens){
+NodoAST* nodoS(struct Token* tokens){
     if(tokens[contadorNodo].tipo == ID){
-        Nodo* nodo = crearNodo(ID_NODO, tokens[contadorNodo].lexema);
+        NodoAST* nodo = crearNodo(ID_PRINCIPAL, tokens[contadorNodo].lexema, tokens[contadorNodo].linea);
         contadorNodo++;
         if(tokens[contadorNodo].tipo == ASIGNACION){
-            Nodo* asignacion = crearNodo(ASIGNACION_NODO, "=");
+            NodoAST* asignacion = crearNodo(ASIGNACION_NODO, "=", tokens[contadorNodo].linea);
             contadorNodo++;
-            Nodo* expresionNodo = nodoA(tokens);
+            NodoAST* expresionNodo = nodoA(tokens);
             asignacion->izquierdo = nodo;
             asignacion->derecho = expresionNodo;
             return asignacion;
@@ -202,12 +207,21 @@ Nodo* nodoS(struct Token* tokens){
     Itera sobre los tokens para comprobar que cumpla las reglas
     de la gramática
 */
-void ast(struct Token* tokens, int cantidad){
-    Nodo* raizAST;
+void construccionAST(struct Token* tokens, int cantidad, struct Pila* pila, struct ArrayError* errores){
+    NodoAST* raizAST;
+    int contadorErrores = errores->numErrores;
     while(contadorNodo < cantidad){
-        raizAST = nodoS(tokens);
-        imprimirNodo(raizAST, 0);
+        raizAST = nodoS(tokens); // Obtiene el nodo AST
+        semantico1(raizAST, 0, pila, errores); // Análisis semántico (declaración de variables)
+        if(errores->numErrores == contadorErrores){ // Verifica errores
+            contadorErrores = errores->numErrores;
+            semantico2(raizAST, 0, pila, errores); // Análsis semantico 2 (Coherencia entre datos)
+            if(errores->numErrores == contadorErrores){ // Verifica errores
+                generaCodigo(raizAST); // Genera el código ensamblador
+            }
+        }
         contadorNodo++;
     }
+    
     liberarNodo(raizAST);
 }

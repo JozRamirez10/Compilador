@@ -28,4 +28,6 @@ enum tken{
     ERROR,      // 18
     SALTO,      // 19
     ESPACIO,    // 20
+    COMILLA,
+    CHAR,
 };
