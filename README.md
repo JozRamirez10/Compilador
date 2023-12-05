@@ -36,7 +36,7 @@ Salida:
 
 Nota: Los archivos de código y pruebas están dentro de la carpeta "Analizador lexico"
 
-## Parser
+## Analizador sintáctico (Parser)
 
 El parser recibe los tokens del analizador léxico y los válida de acuerdo a las reglas de la gramática.
 La gramática inicial se adapto a la siguiente de acuerdo a los tokens:
@@ -66,3 +66,58 @@ Salida 2:
   Error
   ```
 Nota: Los archivos de código y pruebas están dentro de la carpeta "Parser"
+
+## Analizador semántico 
+### AST, tabla de símbolos, manejo de errores y generación de código
+
+Para que el analizador semántico pueda revisar la coherencia del código fuente y realizar comparaciones entre diferentes tipos, se decidió agregar a la gramática la variable de tipo CHAR.
+    ```
+    S => ID = A | ID = CHAR
+    A => B | C
+    B => C + B | C - B | (B) | C
+    C => ID | INT
+    ID => [a-zA-Z][a-zA-Z0-9]*
+    INT => [0-9]+
+    CHAR => '[a-zA-Z]'
+    ```
+
+Cuando el compilador válida el código fuente (sin encontrar errores) procede a generar un archivo con extensión "obj" en lenguaje ensamblador con respectos a las sentencias dadas.
+
+Entrada:
+  ```
+  x = 2;
+  ```
+Salida:
+  ```
+  section .data
+    x dd 0
+  section .text
+    global main
+  main:
+    mov dword [x], 2
+
+    mov eax, 0
+    ret
+  ```
+
+Si encuentra errores, los clasifica e imprime en pantalla.
+
+Entrada
+  ```
+  25;
+  x = ;
+  2 - 4
+  \;
+  ```
+
+Salida
+  ```
+  Linea 4 | (Error léxico) Token sin reconocer: \
+  Linea 1 | (Error sintáctico) No cumple con la gramatica: 25 ; 
+  Linea 2 | (Error sintáctico) No cumple con la gramatica: x = ; 
+  Linea 4 | (Error sintáctico) No cumple con la gramatica: ; 
+  ```
+Nota: Los archivos de código y pruebas están dentro de la carpeta "Compilador"
+
+
+
