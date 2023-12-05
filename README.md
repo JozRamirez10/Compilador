@@ -23,7 +23,7 @@ El analizador léxico consta de dos parte fundamentales dentro del código.
     expresion => alphanum + expresion | alphanum - expresion | (expresion)
     ```
   - analizador.c : Una vez que se ha válidado la grámatica, el analizador determina el tipo de token de cada lexema.
-  - 
+    
 Entrada:
   ```
   x = 2
@@ -39,7 +39,7 @@ Nota: Los archivos de código y pruebas están dentro de la carpeta "Analizador 
 ## Analizador sintáctico (Parser)
 
 El parser recibe los tokens del analizador léxico y los válida de acuerdo a las reglas de la gramática.
-La gramática inicial se adapto a la siguiente de acuerdo a los tokens:
+  - La gramática inicial se adapto a la siguiente de acuerdo a los tokens:
     ```
     S => ID = A
     A => B | C
@@ -70,7 +70,7 @@ Nota: Los archivos de código y pruebas están dentro de la carpeta "Parser"
 ## Analizador semántico 
 ### AST, tabla de símbolos, manejo de errores y generación de código
 
-Para que el analizador semántico pueda revisar la coherencia del código fuente y realizar comparaciones entre diferentes tipos, se decidió agregar a la gramática la variable de tipo CHAR.
+  - Para que el analizador semántico pueda revisar la coherencia del código fuente y realizar comparaciones entre diferentes tipos, se decidió agregar a la gramática la variable de tipo CHAR.
     ```
     S => ID = A | ID = CHAR
     A => B | C
